@@ -42,51 +42,46 @@ const partOne_Solution = () => {
   console.log(count);
   //995
 };
+
+let at0 = false;
+
 for (const line of lines) {
   const direction = line[0];
-  const tempMagnitude = Number(line.slice(1));
-  const magnitude = tempMagnitude % 100;
+  const magnitude = Number(line.slice(1));
 
-  let multiFactor = Math.floor(tempMagnitude / 100);
-  if (multiFactor === 0) multiFactor = 1;
+  console.log("Current :", currPosition);
+  console.log("Count:", count);
+  console.log(direction, magnitude);
 
-  if (direction == "L") {
-    let remainder = currPosition - magnitude;
+  let startsAt0 = currPosition === 0;
 
-    if (remainder < 0) {
+  if (direction === "L") {
+    currPosition = currPosition - magnitude;
+    console.log("new position:", currPosition);
+
+    while (currPosition <= 0) {
+      count++;
+      if (startsAt0) {
+        count--;
+        startsAt0 = false;
+      }
       if (currPosition !== 0) {
-        // first crossing
-        count += 1;
-
-        // additional full loops
-        count += multiFactor - 1;
+        currPosition += 100;
+      } else {
+        break;
       }
-      currPosition = remainder + 100;
-    } else {
-      if (remainder === 0) {
-        count += 1;
-        count += multiFactor - 1;
-      }
-      currPosition = remainder;
+      console.log("overshoot left:", { count, currPosition });
     }
-  } else if (direction == "R") {
-    let newPosition = currPosition + magnitude;
+  } else if (direction === "R") {
+    currPosition = currPosition + magnitude;
+    console.log("new position:", currPosition);
 
-    if (newPosition >= 100) {
-      if (currPosition !== 0) {
-        // first crossing
-        count += 1;
-
-        // additional full loops
-        count += multiFactor - 1;
-      }
-      currPosition = Math.abs(100 - newPosition);
-    } else {
-      currPosition = newPosition;
+    while (currPosition >= 100) {
+      count++;
+      currPosition = currPosition - 100;
+      console.log("overshoot left:", { count, currPosition });
     }
   }
-
-  //   console.log(count);
 }
 
 console.log("finalCount:", count);
