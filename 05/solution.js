@@ -9,24 +9,39 @@ const [rangesPart, numbersPart] = input.split(/\r?\n\r?\n/);
 
 const tempRanges = rangesPart.split(/\r?\n/);
 
-const allRanges = tempRanges.map((temp) => temp.split("-"));
-const allIds = numbersPart.split(/\r?\n/);
-// let count = 0;
+const allRanges = tempRanges.map((r) => r.split("-").map(Number));
 
-// const mySet = new Set();
+allRanges.sort((a, b) => a[0] - b[0]);
+//sorting by starting point
 
-for (let i = 0; i < allRanges.length; i++) {
-  let idRange = allRanges[i];
-  let tempCount = idRange[1] - idRange[0] + 1;
-  for (let j = 0; j < i; j++) {
-    let compareId = allRanges[j];
-    tempCount = tempCount - calcCommon(idRange, compareId);
+const merged = [];
+let [start, end] = allRanges[0];
+
+for (let i = 1; i < allRanges.length; i++) {
+  const [currStart, currEnd] = allRanges[i];
+
+  if (currStart <= end + 1) {
+    //end+1 to handle touching cases
+    // overlapping or touching
+    end = Math.max(end, currEnd);
+  } else {
+    merged.push([start, end]);
+    start = currStart;
+    end = currEnd;
   }
 }
+merged.push([start, end]);
 
-const calcCommon = (id1, id2) => {};
-console.log(mySet.size);
+console.log(merged);
 
+let ans = 0;
+for (const [s, e] of merged) {
+  ans += e - s + 1;
+}
+
+console.log(ans);
+
+console.log(ans);
 const partOne = () => {
   for (const id of allIds) {
     for (const [low, high] of allRanges) {
